@@ -3,7 +3,6 @@ package com.bupt.imageloadeer.pulltorefer;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -23,6 +22,10 @@ import android.widget.TextView;
  */
 public class RefreshableView extends LinearLayout implements View.OnTouchListener {
 
+    /**
+     *
+     */
+    public static final int ZERO = 0;
     /**
      *  下拉状态
     */
@@ -52,7 +55,7 @@ public class RefreshableView extends LinearLayout implements View.OnTouchListene
     /**
      * 一分钟的毫秒值,用于判断上次的更新时间
      */
-    public static final long ONE_MINUTE = 60*100;
+    public static final long ONE_MINUTE = 60*1000;
 
     /**
      * 一小时的毫秒值，用于判断上次的更新时间
@@ -357,7 +360,7 @@ public class RefreshableView extends LinearLayout implements View.OnTouchListene
         RotateAnimation animation = new RotateAnimation(fromDegrees,toDegrees,pivotX,pivotY);
         animation.setDuration(100);
         animation.setFillAfter(true);
-        arrow.setAnimation(animation);
+        arrow.startAnimation(animation);
     }
 
     /**
@@ -410,8 +413,8 @@ public class RefreshableView extends LinearLayout implements View.OnTouchListene
             int topMargin = headerLayoutParams.topMargin;
             while(true){
                 topMargin = topMargin+SCROLL_SPEED;
-                if (topMargin<=0){
-                    topMargin = 0;
+                if (topMargin <= 0){
+                    topMargin = ZERO;
                     break;
                 }
                 publishProgress(topMargin);
@@ -422,7 +425,7 @@ public class RefreshableView extends LinearLayout implements View.OnTouchListene
                 }
             }
             currentStatus = STATUS_REFRESHING;
-            publishProgress(0);
+            publishProgress(topMargin);
             if (mListener != null){
                 mListener.onRefresh();
             }
